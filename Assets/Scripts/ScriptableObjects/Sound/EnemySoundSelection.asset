@@ -1,0 +1,15 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81cb5a2d32b800f46ab2e91d71e848c5, type: 3}
+  m_Name: EnemySoundSelection
+  m_EditorClassIdentifier: 
+  die: {fileID: 8300000, guid: 90f5d519ac0480e4f81c150ce2d6ca02, type: 3}

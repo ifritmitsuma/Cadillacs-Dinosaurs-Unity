@@ -1,0 +1,27 @@
+ManifestFileVersion: 0
+CRC: 3579658765
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: b8a2b17de792841a18a15871c84a6756
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 9a2ca7bdbd1871f7131daf57de908e0c
+  IncrementalBuildHash:
+    serializedVersion: 2
+    Hash: b8a2b17de792841a18a15871c84a6756
+HashAppended: 0
+ClassTypes:
+- Class: 83
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/BundledAssets/09 Boss 1, 2 Intro.flac
+- Assets/BundledAssets/11 Stage Clear.flac
+- Assets/BundledAssets/10 Boss 1 (Stage 1, 5).flac
+- Assets/BundledAssets/07 Trap of Silence (Stage 1-2, 2-3, 6-1).flac
+- Assets/BundledAssets/06 Cadillacs -The Four Heroes- (Stage 1-1, Ending 2).flac
+- Assets/BundledAssets/08 Pursuit (Stage 1-3, 7-1).flac
+- Assets/BundledAssets/04 Opening Demo.flac
+- Assets/BundledAssets/12 Clear Demo.flac
+Dependencies: []
