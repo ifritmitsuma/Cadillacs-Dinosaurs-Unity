@@ -9,8 +9,4 @@ public class PlayerInfo : ScriptableObject {
 
     public RuntimeAnimatorController animator;
 
-    public AudioClip specialSound;
-
-    public AudioClip dieSound;
-
 }

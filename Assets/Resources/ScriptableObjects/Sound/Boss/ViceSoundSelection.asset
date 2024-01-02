@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 81cb5a2d32b800f46ab2e91d71e848c5, type: 3}
-  m_Name: EnemySoundSelection
+  m_Script: {fileID: 11500000, guid: a612583dcd1c3014e849b45fccc9cc8d, type: 3}
+  m_Name: ViceSoundSelection
   m_EditorClassIdentifier: 
-  die: {fileID: 8300000, guid: 90f5d519ac0480e4f81c150ce2d6ca02, type: 3}
+  die: {fileID: 8300000, guid: 02f19d9ecc20d4d4cafb14de7e6cbdd1, type: 3}

@@ -1,7 +1,5 @@
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
@@ -34,15 +32,12 @@ public class PerformerScript : MonoBehaviour, IPauseListener, ICutsceneListener
         GameManager.GetInstance().RegisterPauseListener(this);
         PerformerManager.GetInstance().RegisterCutsceneListener(this);
 
-        const int BufferSize = 128;
-        FileStream stream = File.OpenRead(Application.dataPath.ToString() + "/Scenes/Stage1/" + script);
-        StreamReader streamReader = new(stream, Encoding.UTF8, true, BufferSize);
-
         List<PerformerCommand> list = new();
-        
-        string line;
-        while ((line = streamReader.ReadLine()) != null)
-        {
+
+        TextAsset text = Resources.Load<TextAsset>("Scenes/Stage1/" + script);
+
+        foreach(string line in text.text.Split("\r\n")) {
+
             if(line.Trim() == "") {
                 continue;
             }
@@ -60,7 +55,7 @@ public class PerformerScript : MonoBehaviour, IPauseListener, ICutsceneListener
                 PerformerCommand command = PerformerCommand.CreatePerformerCommand(commandLine);
                 list.Add(command);
             }
-            
+
         }
     }
 

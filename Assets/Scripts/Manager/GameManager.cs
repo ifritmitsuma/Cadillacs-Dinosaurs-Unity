@@ -218,8 +218,8 @@ public class GameManager : MonoBehaviour
             
             GameObject player = instance.LoadPlayer(i + 1, playerPositions[i]);
 
-            PlayerInfo playerInfo = AssetDatabase.LoadAssetAtPath<PlayerInfo>("Assets/Scripts/ScriptableObjects/Info/Player/" + playersSelected[i] + ".asset");
-            PlayerSoundSelection playerSounds = AssetDatabase.LoadAssetAtPath<PlayerSoundSelection>("Assets/Scripts/ScriptableObjects/Sound/Player/" + playersSelected[i] + ".asset");
+            PlayerInfo playerInfo = Resources.Load<PlayerInfo>("ScriptableObjects/Info/Player/" + playersSelected[i]);
+            PlayerSoundSelection playerSounds = Resources.Load<PlayerSoundSelection>("ScriptableObjects/Sound/Player/" + playersSelected[i]);
             instance.AddPlayerInfo(player, playerInfo);
             instance.AddPlayerSounds(player, playerSounds);
 

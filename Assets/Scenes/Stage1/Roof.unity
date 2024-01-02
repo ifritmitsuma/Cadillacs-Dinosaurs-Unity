@@ -152,7 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14dbd8387a420a24496b753eb1aa67ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  script: Stage1Roof.script
+  script: Stage1Roof
   fastForward: 0
 --- !u!4 &53310013
 Transform:
@@ -335,6 +335,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   act: End
+  followPlayer: {fileID: 0}
 --- !u!61 &354150390
 BoxCollider2D:
   m_ObjectHideFlags: 0

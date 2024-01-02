@@ -1099,6 +1099,7 @@ MonoBehaviour:
   player: {fileID: 0}
   backgroundDelimiter: {fileID: 0}
   locked: 0
+  inCutscene: 0
 --- !u!68 &519420035
 EdgeCollider2D:
   m_ObjectHideFlags: 0

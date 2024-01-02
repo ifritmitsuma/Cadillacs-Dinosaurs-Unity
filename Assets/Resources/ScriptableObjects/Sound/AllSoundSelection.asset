@@ -9,9 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 18515547021d707468bf1feafb55ac68, type: 3}
-  m_Name: Roof
+  m_Script: {fileID: 11500000, guid: 512b52db465ad7e48814ec8e2ae0162c, type: 3}
+  m_Name: AllSoundSelection
   m_EditorClassIdentifier: 
-  SceneName: Roof
-  Player1Pos: {x: 12.39, y: -1.33, z: 0}
-  Player2Pos: {x: 14.39, y: -2.33, z: 0}
+  gunfire: {fileID: 8300000, guid: 9bb258f9bbc2dcf408048aadbb55f1c4, type: 3}

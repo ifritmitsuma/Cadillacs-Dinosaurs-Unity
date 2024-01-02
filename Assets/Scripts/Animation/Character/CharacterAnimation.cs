@@ -12,7 +12,7 @@ public class CharacterAnimation : MonoBehaviour {
     void Start() {
         character = transform.parent.GetComponent<Character>();
         animator = GetComponent<Animator>();
-        sounds = AssetDatabase.LoadAssetAtPath<SoundSelection>("Assets/Scripts/ScriptableObjects/Sound/AllSoundSelection.asset");
+        sounds = Resources.Load<SoundSelection>("ScriptableObjects/Sound/AllSoundSelection");
     }
 
     protected virtual void StartByChild() {

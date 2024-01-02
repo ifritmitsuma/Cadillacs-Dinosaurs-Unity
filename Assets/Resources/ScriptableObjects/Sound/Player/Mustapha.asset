@@ -9,7 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c6070bf25e2d2bb499f8fdc1ac25147d, type: 3}
-  m_Name: ViceSoundSelection
+  m_Script: {fileID: 11500000, guid: a99caddac194b7c47b9b0c0f0169ab32, type: 3}
+  m_Name: Mustapha
   m_EditorClassIdentifier: 
-  die: {fileID: 8300000, guid: 02f19d9ecc20d4d4cafb14de7e6cbdd1, type: 3}
+  special: {fileID: 8300000, guid: 922c5f7184c99e8459a5baedf05e090b, type: 3}
+  die: {fileID: 8300000, guid: 59aa06fa06a76bd479fc6b03ba8edc43, type: 3}

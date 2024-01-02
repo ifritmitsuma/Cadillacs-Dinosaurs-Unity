@@ -9,8 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2a9fdfecfc71b0642a83a689b6bb8eee, type: 3}
-  m_Name: Mustapha
+  m_Script: {fileID: 11500000, guid: 037c6f22d4d903946b2e58c7b2738c6c, type: 3}
+  m_Name: EnemySoundSelection
   m_EditorClassIdentifier: 
-  special: {fileID: 8300000, guid: 922c5f7184c99e8459a5baedf05e090b, type: 3}
-  die: {fileID: 8300000, guid: 59aa06fa06a76bd479fc6b03ba8edc43, type: 3}
+  die: {fileID: 8300000, guid: 90f5d519ac0480e4f81c150ce2d6ca02, type: 3}

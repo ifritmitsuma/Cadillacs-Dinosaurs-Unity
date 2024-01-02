@@ -1,4 +1,5 @@
 using UnityEditor;
+using UnityEngine;
 
 public class EnemyAnimation : CharacterAnimation {
 
@@ -6,7 +7,7 @@ public class EnemyAnimation : CharacterAnimation {
 
     void Start() {
         base.StartByChild();
-        enemySounds = AssetDatabase.LoadAssetAtPath<EnemySoundSelection>("Assets/Scripts/ScriptableObjects/Sound/EnemySoundSelection.asset");
+        enemySounds = Resources.Load<EnemySoundSelection>("ScriptableObjects/Sound/EnemySoundSelection");
     }
 
     protected override void StartByChild()
