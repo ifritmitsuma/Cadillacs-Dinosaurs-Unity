@@ -1,12 +1,12 @@
 ## Start
 cams -13,61 0,75
-newc Gneiss Gneiss1 10,62 -2,6 right
-newc Ferris Ferris1 10 -2,01 right
 newc Ferris Ferris2 10,86 -1,33 right
+newc Ferris Ferris1 10 -2,01 right
+newc Gneiss Gneiss1 10,62 -2,6 right
+newc Vice Vice 16,96 -1,33 left
 newc Ferris Ferris3 15,14 -1,23 left
 newc Ferris Ferris4 16,03 -1,76 left
 newc Ferris Ferris5 15,78 -2,49 left
-newc Vice Vice 16,96 -1,33 left
 play "04 Opening Demo"
 camm 27 5
 text center "Eastcoast 2513" 3
@@ -16,12 +16,12 @@ delay 2
 char Vice shootUp
 text bottom "My men will teach you a lesson!" 2
 delay 1
-char Gneiss1 walk Player1
-char Ferris1 walk Player1
-char Ferris2 walk Player1
-char Ferris3 walk Player1
-char Ferris4 walk Player1
-char Ferris5 walk Player1
+char Gneiss1 walk Player1 close
+char Ferris1 walk Player1 close
+char Ferris2 walk Player1 close
+char Ferris3 walk Player1 close
+char Ferris4 walk Player1 close
+char Ferris5 walk Player1 close
 delay 1
 char Player1 special
 play "06 Cadillacs -The Four Heroes- (Stage 1-1, Ending 2)"
@@ -33,14 +33,18 @@ char Ferris3 die
 char Ferris4 die
 char Ferris5 die
 ui show
+ui timer
 end
 
 ## End
 camf true
-char Player1 walk 32 -3,25
-char Player1 punch
-obj Door break
-char Player1 walk right
+char Player1 walk 31,5 -3,27
 delay 1
+char Player1 punch
+delay 1
+obj Door break
+delay 1
+char Player1 walk right
+delay 3
 scene Inside
 end

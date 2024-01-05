@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public class Vice : Boss
 {
 
@@ -16,8 +14,7 @@ public class Vice : Boss
         } catch(AnimationCommandException) {
         }
 
-        AnimatorStateInfo currentAnimationState = animator.GetCurrentAnimatorStateInfo(0);
-        if(!currentAnimationState.IsName(animation)) {
+        if(!AnimationManager.GetInstance().IsAnimationPlaying(animator, animation)) {
             switch(animation) {
                 case "shootUp":
                     ShootUp();
@@ -33,7 +30,7 @@ public class Vice : Boss
     public void ShootUp()
     {
         if(!paused)
-            animator.Play("shootUp");
+            AnimationManager.GetInstance().Play(animator, "shootUp");
     }
 
 }

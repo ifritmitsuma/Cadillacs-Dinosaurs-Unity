@@ -21,30 +21,31 @@ public class Player : Character
     }
 
     void Update() {
+        
+        if(paused || inCutscene) {
+            moveX = 0.0f;
+            moveY = 0.0f;
+            animator.SetFloat("moveMagnitude", 0.0f);
+            if(paused) {
+                return;
+            }
+        }
 
         UpdateByChild();
 
-        if(Input.GetButtonDown("Punch")) {
-            attacking = true;
-            animator.Play("punch");
+        if(inCutscene) {
             return;
         }
 
-        if(!animator.GetCurrentAnimatorStateInfo(0).IsName("idle") &&
-           !animator.GetCurrentAnimatorStateInfo(0).IsName("walk") &&
-           !animator.GetCurrentAnimatorStateInfo(0).IsName("run")) {
+        if(Input.GetButtonDown("Punch")) {
+            attacking = true;
+            Punch();
             return;
         }
 
         attacking = false;
 
         // Movement
-
-        if(paused || inCutscene) {
-            moveX = 0.0f;
-            moveY = 0.0f;
-            return;
-        }
 
         previousMoveX = moveX;
 
@@ -109,8 +110,7 @@ public class Player : Character
         } catch(AnimationCommandException) {
         }
 
-        AnimatorStateInfo currentAnimationState = animator.GetCurrentAnimatorStateInfo(0);
-        if(!currentAnimationState.IsName(animation)) {
+        if(!AnimationManager.GetInstance().IsAnimationPlaying(animator, animation)) {
             switch(animation) {
                 case "punch":
                     Punch();
@@ -129,12 +129,12 @@ public class Player : Character
 
     public void Punch()
     {
-        animator.Play("punch");
+        AnimationManager.GetInstance().Play(animator, "punch");
     }
 
     public void Special()
     {
-        animator.Play("special");
+        AnimationManager.GetInstance().Play(animator, "special");
     }
 
     public void GetHit(int damage) {

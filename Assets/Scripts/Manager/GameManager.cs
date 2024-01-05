@@ -189,8 +189,14 @@ public class GameManager : MonoBehaviour
 
     public void MakeHaste(float timerValue = -1.0f)
     {
-        timerEnabled = true;
-        timer = timerValue == -1.0f ? defaultTimer : timerValue;
+        if(!timerEnabled) {
+            timerEnabled = true;
+            timer = timerValue == -1.0f ? defaultTimer : timerValue;
+            return;
+        }
+        if(timerValue != -1.0f) {
+            timer = timerValue;
+        }
     }
 
     public void MakeHaste(string performerAct, FollowPlayer followPlayer = null) {
@@ -199,6 +205,11 @@ public class GameManager : MonoBehaviour
         }
         timerEnabled = false;
         UIManager.GetInstance().ShowGoAnimation(PerformerManager.GetInstance().RunPerformance, performerAct);
+    }
+
+    public void ClearTimer() {
+        timerEnabled = false;
+        timer = 0.0f;
     }
 
     public void LoadPlayers(Vector3 player1Pos, Vector3 player2Pos)

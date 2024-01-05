@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UnityEngine;
 
 public abstract class Character : MonoBehaviour, IPauseListener, ICutsceneListener, IAnimatable
@@ -28,8 +29,6 @@ public abstract class Character : MonoBehaviour, IPauseListener, ICutsceneListen
     public bool dying;
 
     public bool attacking;
-
-    private Vector3? relativePosition = null;
 
     void Start() {
         GameManager.GetInstance().RegisterPauseListener(this);
@@ -65,23 +64,18 @@ public abstract class Character : MonoBehaviour, IPauseListener, ICutsceneListen
             return true;
         }
 
-        AnimatorStateInfo currentAnimationState = animator.GetCurrentAnimatorStateInfo(0);
-        if(!currentAnimationState.IsName(animation)) {
-            switch(animation) {
-                case "walk":
-                    return Move(animArgs, false);
-                case "run":
-                    return Move(animArgs, true);
-                case "die":
-                    if(!dead && !dying) {
-                        GameManager.GetInstance().KillCharacter(this);
-                    }
-                    return dead;
-                default:
-                    throw new AnimationCommandException();
-            }
-        } else {
-            return true;
+        switch(animation) {
+            case "walk":
+                return Move(animArgs, false);
+            case "run":
+                return Move(animArgs, true);
+            case "die":
+                if(!dead && !dying) {
+                    GameManager.GetInstance().KillCharacter(this);
+                }
+                return dead;
+            default:
+                throw new AnimationCommandException();
         }
     }
 
@@ -117,60 +111,44 @@ public abstract class Character : MonoBehaviour, IPauseListener, ICutsceneListen
         }
 
         if(relative != null) {
-            return MoveTowards(GameObject.Find(relative), run);
+            return MoveTowards(GameObject.Find(relative), run, args.Length > 1 && args[1] == "close");
         } else {
             return MoveTowards(new Vector3(absoluteX, absoluteY, transform.position.z), run);
         }
 
     }
 
-    public bool MoveTowards(Vector3 otherPosition, bool run)
+    public bool MoveTowards(Vector3 otherPosition, bool run, bool closeToPosition = false)
     {
-        Vector3 diff = new(transform.position.x > otherPosition.x ? -1.5f : 1.5f, transform.position.y > otherPosition.y ? -0.3f : 0.3f, 0);
+        if(closeToPosition) {
+            Vector3 diff = new(transform.position.x > otherPosition.x ? -1.5f : 1.5f, transform.position.y > otherPosition.y ? -0.3f : 0.3f, 0);
+            otherPosition -= diff;
+        }
         
-        if(transform.position == otherPosition - diff || (Mathf.Abs(otherPosition.x) == moveToDisappear && IsOffScreen())) {
-            relativePosition = null;
+        if (transform.position == otherPosition)
+        {
+            animator.SetFloat("moveMagnitude", 0.0f);
             return true;
         }
-        relativePosition = otherPosition;
-        animator.Play(run ? "run" : "walk");
+
+        transform.position = Vector3.MoveTowards(transform.position, otherPosition, (run ? 2.0f : 1.0f) * speed * Time.deltaTime);
+
+        if (Mathf.Abs(otherPosition.x) == moveToDisappear && IsOffScreen())
+        {
+            animator.SetFloat("moveMagnitude", 0.0f);
+            if(this is not Player) {
+                DestroyImmediate(gameObject);
+            }
+            return true;
+        }
+
+        AnimationManager.GetInstance().Play(animator, run ? "run" : "walk");
         animator.SetFloat("moveMagnitude", 1.0f);
         return false;
     }
 
-    public bool MoveTowards(GameObject other, bool run) {
-        return MoveTowards(other.transform.position, run);
-    }
-
-    private void LateUpdate()
-    {
-
-        if (relativePosition == null)
-        {
-            return;
-        }
-
-        Vector3 relPosition = relativePosition.Value;
-
-        Vector3 diff = new(transform.position.x > relPosition.x ? -1.5f : 1.5f, transform.position.y > relPosition.y ? -0.3f : 0.3f, 0);
-        if (transform.position == relPosition - diff)
-        {
-            animator.SetFloat("moveMagnitude", 0.0f);
-            relativePosition = null;
-            return;
-        }
-
-        transform.position = Vector3.MoveTowards(transform.position, relPosition - diff, (run ? 2.0f : 1.0f) * speed * Time.deltaTime);
-
-        if (Mathf.Abs(relPosition.x) == moveToDisappear && IsOffScreen())
-        {
-            animator.SetFloat("moveMagnitude", 0.0f);
-            relativePosition = null;
-            if(this is not Player) {
-                DestroyImmediate(gameObject);
-            }
-        }
-
+    public bool MoveTowards(GameObject other, bool run, bool closeToPosition) {
+        return MoveTowards(other.transform.position, run, closeToPosition);
     }
 
     private bool IsOffScreen()
@@ -182,9 +160,9 @@ public abstract class Character : MonoBehaviour, IPauseListener, ICutsceneListen
     protected void MoveY()
     {
         if(run) {
-            animator.Play("run");
+            AnimationManager.GetInstance().Play(animator, "run");
         } else {
-            animator.Play("walk");
+            AnimationManager.GetInstance().Play(animator, "walk");
         }
         transform.position += new Vector3(0.0f, (moveY > 0.0f ? 0.01f : -0.01f) * (run ? 2.0f : 1.0f) * speed / 2.0f, 0.0f);
     }
@@ -195,16 +173,16 @@ public abstract class Character : MonoBehaviour, IPauseListener, ICutsceneListen
         rightDirection = moveX > 0.0f;
 
         if(run) {
-            animator.Play("run");
+            AnimationManager.GetInstance().Play(animator, "run");
         } else {
-            animator.Play("walk");
+            AnimationManager.GetInstance().Play(animator, "walk");
         }
         transform.position += new Vector3((rightDirection ? 0.01f : -0.01f) * (run ? 2.0f : 1.0f) * speed, 0.0f, 0.0f);
     }
 
     public bool Die() {
         if(!dead && !dying) {
-            animator.Play("die");
+            AnimationManager.GetInstance().Play(animator, "die");
             dying = true;
         }
         return dead;        
@@ -241,9 +219,5 @@ public abstract class Character : MonoBehaviour, IPauseListener, ICutsceneListen
         if(animator)
             animator.speed = ff ? 3.0f : 1.0f;
         speed = ff ? speed * 3.0f : speed / 3.0f;
-    }
-
-    public bool IsInAnimation(string animation) {
-        return animator.GetCurrentAnimatorStateInfo(0).IsName(animation);
     }
 }

@@ -168,8 +168,8 @@ public class UIManager : MonoBehaviour, IPauseListener
 
     public void ShowGoAnimation(Action<string> callback = null, string argument = null)
     {
-        if(!goAnimator.GetCurrentAnimatorStateInfo(0).IsName("Go"))
-            goAnimator.Play("Go");
+        if(!AnimationManager.GetInstance().IsAnimationPlaying(goAnimator, "Go"))
+            AnimationManager.GetInstance().Play(goAnimator, "Go");
 
         if(callback != null) {
             StartCoroutine(AfterGoAnimation(callback, argument));
@@ -178,7 +178,7 @@ public class UIManager : MonoBehaviour, IPauseListener
 
     IEnumerator AfterGoAnimation(Action<string> callback, string argument)
     {
-        yield return new WaitUntil(() => !goAnimator.GetCurrentAnimatorStateInfo(0).IsName("Go"));
+        yield return new WaitUntil(() => !AnimationManager.GetInstance().IsAnimationPlaying(goAnimator, "Go"));
         callback.Invoke(argument);
     }
 }

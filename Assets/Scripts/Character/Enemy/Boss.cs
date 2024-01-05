@@ -17,8 +17,7 @@ public class Boss : Enemy
         } catch(AnimationCommandException) {
         }
 
-        AnimatorStateInfo currentAnimationState = animator.GetCurrentAnimatorStateInfo(0);
-        if(!currentAnimationState.IsName(animation)) {
+        if(!AnimationManager.GetInstance().IsAnimationPlaying(animator, animation)) {
             switch(animation) {
                 case "die":
                     return false;

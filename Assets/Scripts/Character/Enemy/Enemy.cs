@@ -18,8 +18,7 @@ public class Enemy : Character
         } catch(AnimationCommandException) {
         }
 
-        AnimatorStateInfo currentAnimationState = animator.GetCurrentAnimatorStateInfo(0);
-        if(!currentAnimationState.IsName(animation)) {
+        if(!AnimationManager.GetInstance().IsAnimationPlaying(animator, animation)) {
             switch(animation) {
                 default:
                     throw new AnimationCommandException();

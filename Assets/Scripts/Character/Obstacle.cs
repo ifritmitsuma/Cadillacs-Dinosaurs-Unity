@@ -36,11 +36,10 @@ public class Obstacle : MonoBehaviour, IAnimatable
             return true;
         }
 
-        AnimatorStateInfo currentAnimationState = animator.GetCurrentAnimatorStateInfo(0);
-        if(!currentAnimationState.IsName(animation)) {
+        if(!AnimationManager.GetInstance().IsAnimationPlaying(animator, animation)) {
             switch(animation) {
                 case "break":
-                    animator.Play("break");
+                    AnimationManager.GetInstance().Play(animator, "break");
                     break;
                 default:
                     throw new AnimationCommandException();

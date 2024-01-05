@@ -23,19 +23,17 @@ public class FollowPlayer : MonoBehaviour, ICutsceneListener
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         frameCollider.enabled = !inCutscene;
         if(!locked && !inCutscene && player != null && backgroundDelimiter != null) {
-            float bgBoxWidth = backgroundDelimiter.GetComponent<SpriteRenderer>().bounds.size.x;
-            if(!(player.position.x < backgroundDelimiter.transform.position.x - bgBoxWidth / 2.0f + GetComponent<Camera>().orthographicSize * GetComponent<Camera>().aspect ||
-                 player.position.x > backgroundDelimiter.transform.position.x + bgBoxWidth / 2.0f - GetComponent<Camera>().orthographicSize * GetComponent<Camera>().aspect) &&
-                 transform.position.x < player.position.x) {
-                
+            if(transform.position.x < player.position.x) {
                 rb.MovePosition(new Vector2(player.position.x, player.position.y));
+            } else {
                 GameManager.GetInstance().MakeHaste();
-
             }
+        } else {
+            GameManager.GetInstance().ClearTimer();
         }
     }
 
@@ -54,7 +52,6 @@ public class FollowPlayer : MonoBehaviour, ICutsceneListener
     }
 
     private void OnTriggerEnter2D(Collider2D other) {
-        Destroy(other);
         other.TryGetComponent(out EdgePerformerCaller component);
         if(component) {
             component.followPlayer = this;
