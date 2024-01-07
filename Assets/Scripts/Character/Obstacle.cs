@@ -1,53 +1,60 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Obstacle : MonoBehaviour, IAnimatable
 {
 
-    public Sprite replacementSprite;
-
-    private SpriteRenderer spriteRenderer;
-
     private Animator animator;
+
+    public ObstacleSettings obstacleSettings;
+
+    public GameObject prizePrefab;
 
     // Start is called before the first frame update
     void Start()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        _ = TryGetComponent<Animator>(out animator);
+        animator = transform.Find("Animation").GetComponent<Animator>();
     }
 
     void OnTriggerEnter2D(Collider2D other) {
-        if(spriteRenderer.sprite == replacementSprite) {
-            return;
-        }
 
         if(other.gameObject.layer == LayerMask.NameToLayer("Player") && other is CircleCollider2D && other.isTrigger) {
             Player player = other.transform.parent.GetComponent<Player>();
             if(player.attacking) {
-                Animate("break");
-                GameManager.GetInstance().UpdateScore(player, 100);
+                GetComponent<Collider2D>().enabled = false;
+                if(obstacleSettings.breakSound) {
+                    AudioManager.GetInstance().PlaySound(obstacleSettings.breakSound);
+                }
+                AnimationManager.GetInstance().Play(animator, "break");
+                GameManager.GetInstance().UpdateScore(player, obstacleSettings.score);
+                if(obstacleSettings.hasPrize && prizePrefab) {
+                    GameObject prize = Instantiate(prizePrefab, transform.position, transform.rotation);
+                    SceneManager.MoveGameObjectToScene(prize, gameObject.scene);
+                }
             }
         }
     }
 
-    public bool Animate(string animation, string[] animArgs = null)
+    public bool Animate(string animation, string[] animArgs = null, bool firstTime = true)
     {
-        if(animator == null || spriteRenderer.sprite == replacementSprite) {
+        if(animator == null) {
             return true;
         }
 
-        if(!AnimationManager.GetInstance().IsAnimationPlaying(animator, animation)) {
-            switch(animation) {
-                case "break":
+        switch(animation) {
+            case "break":
+                if(firstTime) {
+                    if(obstacleSettings.breakSound) {
+                        AudioManager.GetInstance().PlaySound(obstacleSettings.breakSound);
+                    }
                     AnimationManager.GetInstance().Play(animator, "break");
-                    break;
-                default:
-                    throw new AnimationCommandException();
-            }
-        } else {
-            spriteRenderer.sprite = replacementSprite;
-            return true;
+                    return false;
+                }
+                break;
+            default:
+                throw new AnimationCommandException();
         }
-        return false;
+        
+        return !AnimationManager.GetInstance().IsAnimationPlaying(animator, animation);
     }
 }

@@ -29,11 +29,10 @@ public class FollowPlayer : MonoBehaviour, ICutsceneListener
         if(!locked && !inCutscene && player != null && backgroundDelimiter != null) {
             if(transform.position.x < player.position.x) {
                 rb.MovePosition(new Vector2(player.position.x, player.position.y));
+                GameManager.GetInstance().ClearTimer();
             } else {
                 GameManager.GetInstance().MakeHaste();
             }
-        } else {
-            GameManager.GetInstance().ClearTimer();
         }
     }
 
@@ -57,6 +56,7 @@ public class FollowPlayer : MonoBehaviour, ICutsceneListener
             component.followPlayer = this;
         }
         locked = true;
+        Destroy(other.gameObject);
     }
 
 }

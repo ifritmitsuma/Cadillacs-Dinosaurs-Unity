@@ -117,7 +117,7 @@ public class PerformerScript : MonoBehaviour, IPauseListener, ICutsceneListener
         List<PerformerCommand> commandsToRemove = new();
 
         foreach(PerformerCommand executingCommand in commandsExecuting.Keys) {
-            PerformerTime currentTime = executingCommand.Execute(Camera.main, dic, fastForward);
+            PerformerTime currentTime = executingCommand.Execute(Camera.main, dic, fastForward, commandsExecuting[executingCommand] == null);
             commandsExecuting.TryGetValue(executingCommand, out PerformerTime commandTime);
             if(commandTime == null) {
                 commandsExecuting[executingCommand] = currentTime;
@@ -140,6 +140,10 @@ public class PerformerScript : MonoBehaviour, IPauseListener, ICutsceneListener
             commandsExecuting.Remove(commandToRemove);
         }
 
+    }
+
+    public void AddGameObject(GameObject player) {
+        dic.Add(player.name, player);
     }
 
     public void Pause()

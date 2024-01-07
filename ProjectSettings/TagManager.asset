@@ -49,3 +49,6 @@ TagManager:
   - name: Character
     uniqueID: 195500053
     locked: 0
+  - name: Clipping
+    uniqueID: 1887686123
+    locked: 0

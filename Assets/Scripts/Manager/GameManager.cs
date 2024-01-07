@@ -152,9 +152,11 @@ public class GameManager : MonoBehaviour
         UIManager.GetInstance().UpdateScore(player.index, amount);
     }
 
-    IEnumerator AfterDeath(Character character, PlayerStats stats = null, Vector3? lastPosition = null)
+    IEnumerator AfterDeath(Character character, PlayerStats stats = null, Vector3? lastPosition = null, Action callback = null)
     {
-        yield return new WaitUntil(() => character.Die());
+        character.Die();
+        yield return new WaitUntil(() => !AnimationManager.GetInstance().IsAnimationPlaying(character.animator, "die"));
+        callback?.Invoke();
         Destroy(character.gameObject);
         switch(character) {
             case Player:
@@ -180,11 +182,12 @@ public class GameManager : MonoBehaviour
                 break;
             default: break;
         }
+        Destroy(character.gameObject);
     }
 
-    public void KillCharacter(Character character, PlayerStats stats = null, Vector3? lastPosition = null)
+    public void KillCharacter(Character character, PlayerStats stats = null, Vector3? lastPosition = null, Action callback = null)
     {
-        StartCoroutine(AfterDeath(character, stats, lastPosition));
+        StartCoroutine(AfterDeath(character, stats, lastPosition, callback));
     }
 
     public void MakeHaste(float timerValue = -1.0f)
@@ -200,30 +203,37 @@ public class GameManager : MonoBehaviour
     }
 
     public void MakeHaste(string performerAct, FollowPlayer followPlayer = null) {
-        if(followPlayer) {
-            followPlayer.locked = false;
-        }
-        timerEnabled = false;
-        UIManager.GetInstance().ShowGoAnimation(PerformerManager.GetInstance().RunPerformance, performerAct);
+        UIManager.GetInstance().ShowGoAnimation((x) => {
+            if(followPlayer) {
+                followPlayer.locked = false;
+            }
+            PerformerManager.GetInstance().RunPerformance(x);
+        }, performerAct);
+        ClearTimer();
     }
 
     public void ClearTimer() {
         timerEnabled = false;
         timer = 0.0f;
+        UIManager.GetInstance().HideMessage("center");
     }
 
-    public void LoadPlayers(Vector3 player1Pos, Vector3 player2Pos)
+    public void LoadPlayers(Vector3 player1Pos, Vector3 player2Pos, bool startInCutscene = false)
     {
-
-        if(players.Count > 0) {
-            return;
-        }
+        
 
         if(playersSelected.Count == 1) {
             player1Pos += (player2Pos - player1Pos) / 2;
         }
 
         Vector3[] playerPositions = { player1Pos, player2Pos };
+
+        if(players.Count > 0) {
+            for(int i = 0; i < players.Count; ++i) {
+                players[i].transform.position = playerPositions[i];
+            }
+            return;
+        }
 
         for(int i = 0; i < playersSelected.Count; ++i) {
             
@@ -234,6 +244,11 @@ public class GameManager : MonoBehaviour
             instance.AddPlayerInfo(player, playerInfo);
             instance.AddPlayerSounds(player, playerSounds);
 
+            PerformerManager.GetInstance().AddGameObject(player);
+
+            if(startInCutscene) {
+                player.GetComponent<Character>().CutsceneStarted();
+            }
         }
 
     }

@@ -18,6 +18,8 @@ public class UIManager : MonoBehaviour, IPauseListener
 
     public Animator goAnimator;
 
+    public Image fadeOverlay;
+
     private static UIManager instance;
 
     public static UIManager GetInstance()
@@ -180,5 +182,18 @@ public class UIManager : MonoBehaviour, IPauseListener
     {
         yield return new WaitUntil(() => !AnimationManager.GetInstance().IsAnimationPlaying(goAnimator, "Go"));
         callback.Invoke(argument);
+    }
+
+    public void OverlayFade(bool fadeIn, Action callback = null) {
+        StartCoroutine(OverlayFadeCoroutine(fadeIn, callback)); 
+    }
+
+    IEnumerator OverlayFadeCoroutine(bool fadeIn, Action callback = null)
+    {
+        yield return new WaitUntil(() => {
+            fadeOverlay.color = new Color(fadeOverlay.color.r, fadeOverlay.color.g, fadeOverlay.color.b, Mathf.Max(0, Mathf.Min(fadeOverlay.color.a + (fadeIn ? -0.01f : 0.01f), 1)));
+            return fadeOverlay.color.a == (fadeIn ? 0 : 1);
+        });
+        callback?.Invoke();
     }
 }

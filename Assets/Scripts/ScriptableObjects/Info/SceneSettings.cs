@@ -10,4 +10,6 @@ public class SceneSettings : ScriptableObject
 
     public Vector3 Player2Pos;
 
+    public string music;
+
 }

@@ -4,8 +4,6 @@ public class PlayerAnimation : CharacterAnimation {
 
     public PlayerSoundSelection playerSounds;
 
-    public Player player;
-
     void Start() {
         base.StartByChild();
     }

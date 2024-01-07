@@ -7,7 +7,7 @@ public class CameraFollowPerformerCommand : OneShotPerformerCommand {
         this.command = PerformerCommandEnum.CAMF;
     }
 
-    public override PerformerTime Execute(Camera camera, Dictionary<string, GameObject> gameObjects, bool ff)
+    public override PerformerTime Execute(Camera camera, Dictionary<string, GameObject> gameObjects, bool ff, bool firstTime = true)
     {
         
         camera.TryGetComponent(out FollowPlayer followPlayer);

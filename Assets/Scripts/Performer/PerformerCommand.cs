@@ -23,13 +23,11 @@ public abstract class PerformerCommand {
         get; set;
     }
 
-    public virtual PerformerTime Execute(Camera camera, Dictionary<string, GameObject> gameObjects, bool ff) {
+    public virtual PerformerTime Execute(Camera camera, Dictionary<string, GameObject> gameObjects, bool ff, bool firstTime = true) {
 
-        PerformerTime time = new() {
+        return new() {
             startTime = Time.time
         };
-
-        return time;
 
     }
 

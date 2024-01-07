@@ -7,7 +7,7 @@ public class UIPerformerCommand : OneShotPerformerCommand {
         this.command = PerformerCommandEnum.UI;
     }
 
-    public override PerformerTime Execute(Camera camera, Dictionary<string, GameObject> gameObjects, bool ff)
+    public override PerformerTime Execute(Camera camera, Dictionary<string, GameObject> gameObjects, bool ff, bool firstTime = true)
     {
 
         switch(arguments[0]) {

@@ -1,5 +1,5 @@
 using System;
-using System.Linq;
+using System.Globalization;
 using UnityEngine;
 
 public abstract class Character : MonoBehaviour, IPauseListener, ICutsceneListener, IAnimatable
@@ -9,9 +9,13 @@ public abstract class Character : MonoBehaviour, IPauseListener, ICutsceneListen
 
     public float speed = 5.0f;
 
-    protected Animator animator;
+    public Animator animator;
 
-    protected Transform animationChild;
+    private Transform animationChild;
+
+    private SpriteRenderer animationSpriteRenderer;
+
+    private Rigidbody2D rb;
 
     protected float moveX;
     protected float moveY;
@@ -24,21 +28,19 @@ public abstract class Character : MonoBehaviour, IPauseListener, ICutsceneListen
 
     protected bool inCutscene;
 
-    public bool dead;
-
-    public bool dying;
-
     public bool attacking;
 
     void Start() {
         GameManager.GetInstance().RegisterPauseListener(this);
         PerformerManager.GetInstance().RegisterCutsceneListener(this);
-
-        animationChild = transform.Find("Animation");
         
+        animationChild = transform.Find("Animation");
         animator = animationChild.GetComponent<Animator>();
+        animationSpriteRenderer = animationChild.GetComponent<SpriteRenderer>();
 
-        rightDirection = animationChild.localScale.x > 0;
+        animationChild.TryGetComponent(out rb);
+
+        rightDirection = transform.localScale.x > 0;
     }
 
     protected virtual void StartByChild() {
@@ -47,9 +49,12 @@ public abstract class Character : MonoBehaviour, IPauseListener, ICutsceneListen
 
     void Update() {
 
-        if((rightDirection && animationChild.localScale.x < 0) || (!rightDirection && animationChild.localScale.x > 0)) {
-            animationChild.localScale = new Vector3(animationChild.localScale.x * -1, animationChild.localScale.y, animationChild.localScale.z);
-        } 
+        if((rightDirection && transform.localScale.x < 0) || (!rightDirection && transform.localScale.x > 0)) {
+            transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
+            rightDirection = transform.localScale.x > 0;
+        }
+
+        animationSpriteRenderer.sortingOrder = (int) (transform.position.y  * -1000);
 
     }
 
@@ -57,7 +62,7 @@ public abstract class Character : MonoBehaviour, IPauseListener, ICutsceneListen
         Update();
     }
 
-    public virtual bool Animate(string animation, string[] animArgs = null)
+    public virtual bool Animate(string animation, string[] animArgs = null, bool firstTime = true)
     {
 
         if(animator == null) {
@@ -70,13 +75,16 @@ public abstract class Character : MonoBehaviour, IPauseListener, ICutsceneListen
             case "run":
                 return Move(animArgs, true);
             case "die":
-                if(!dead && !dying) {
+                if(firstTime) {
                     GameManager.GetInstance().KillCharacter(this);
+                    return false;
                 }
-                return dead;
+                break;
             default:
                 throw new AnimationCommandException();
         }
+
+        return !AnimationManager.GetInstance().IsAnimationPlaying(animator, animation);
     }
 
     public bool Move(string[] args, bool run) {
@@ -89,20 +97,18 @@ public abstract class Character : MonoBehaviour, IPauseListener, ICutsceneListen
         string relative = null;
         try
         {
-            absoluteX = float.Parse(args[0]);
-            absoluteY = float.Parse(args[1]);
+            absoluteX = float.Parse(args[0], CultureInfo.InvariantCulture);
+            absoluteY = float.Parse(args[1], CultureInfo.InvariantCulture);
         } catch (FormatException)
         {
             switch(args[0]) {
                 case "right":
                     absoluteX = moveToDisappear;
                     absoluteY = transform.position.y;
-                    rightDirection = true;
                     break;
                 case "left":
                     absoluteX = -moveToDisappear;
                     absoluteY = transform.position.y;
-                    rightDirection = false;
                     break;
                 default:
                     relative = args[0];
@@ -131,6 +137,11 @@ public abstract class Character : MonoBehaviour, IPauseListener, ICutsceneListen
             return true;
         }
 
+        rightDirection = otherPosition.x > transform.position.x;
+
+        if(rb != null && rb.bodyType != RigidbodyType2D.Static) {
+            rb.MovePosition((run ? 2.0f : 1.0f) * speed * Time.deltaTime * otherPosition);
+        }
         transform.position = Vector3.MoveTowards(transform.position, otherPosition, (run ? 2.0f : 1.0f) * speed * Time.deltaTime);
 
         if (Mathf.Abs(otherPosition.x) == moveToDisappear && IsOffScreen())
@@ -141,7 +152,7 @@ public abstract class Character : MonoBehaviour, IPauseListener, ICutsceneListen
             }
             return true;
         }
-
+        
         AnimationManager.GetInstance().Play(animator, run ? "run" : "walk");
         animator.SetFloat("moveMagnitude", 1.0f);
         return false;
@@ -164,6 +175,9 @@ public abstract class Character : MonoBehaviour, IPauseListener, ICutsceneListen
         } else {
             AnimationManager.GetInstance().Play(animator, "walk");
         }
+        if(rb != null && rb.bodyType != RigidbodyType2D.Static) {
+            rb.MovePosition(new Vector3(0.0f, (moveY > 0.0f ? 0.01f : -0.01f) * (run ? 2.0f : 1.0f) * speed / 2.0f, 0.0f));
+        }
         transform.position += new Vector3(0.0f, (moveY > 0.0f ? 0.01f : -0.01f) * (run ? 2.0f : 1.0f) * speed / 2.0f, 0.0f);
     }
 
@@ -177,15 +191,15 @@ public abstract class Character : MonoBehaviour, IPauseListener, ICutsceneListen
         } else {
             AnimationManager.GetInstance().Play(animator, "walk");
         }
+        if(rb != null && rb.bodyType != RigidbodyType2D.Static) {
+            rb.MovePosition(new Vector3((rightDirection ? 0.01f : -0.01f) * (run ? 2.0f : 1.0f) * speed, 0.0f, 0.0f));
+        }
         transform.position += new Vector3((rightDirection ? 0.01f : -0.01f) * (run ? 2.0f : 1.0f) * speed, 0.0f, 0.0f);
     }
 
     public bool Die() {
-        if(!dead && !dying) {
-            AnimationManager.GetInstance().Play(animator, "die");
-            dying = true;
-        }
-        return dead;        
+        AnimationManager.GetInstance().Play(animator, "die");
+        return !AnimationManager.GetInstance().IsAnimationPlaying(animator, "die");        
     }
 
     public virtual void Pause()

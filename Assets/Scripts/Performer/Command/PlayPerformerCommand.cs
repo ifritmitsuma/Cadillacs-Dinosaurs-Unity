@@ -7,7 +7,7 @@ public class PlayPerformerCommand : OneShotPerformerCommand {
         this.command = PerformerCommandEnum.PLAY;
     }
 
-    public override PerformerTime Execute(Camera camera, Dictionary<string, GameObject> gameObjects, bool ff)
+    public override PerformerTime Execute(Camera camera, Dictionary<string, GameObject> gameObjects, bool ff, bool firstTime = true)
     {
         AudioManager.GetInstance().PlayMusic(arguments[0], false);
 

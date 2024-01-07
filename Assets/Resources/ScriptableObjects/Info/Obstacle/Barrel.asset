@@ -9,10 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 423075791da781e4b91270881fa96e03, type: 3}
-  m_Name: Inside
+  m_Script: {fileID: 11500000, guid: 4895e0db4c82030489466054750f6368, type: 3}
+  m_Name: Barrel
   m_EditorClassIdentifier: 
-  SceneName: Inside
-  Player1Pos: {x: -4.46, y: -2.28, z: 0}
-  Player2Pos: {x: -4.46, y: -2.28, z: 0}
-  music: 07 Trap of Silence (Stage 1-2, 2-3, 6-1)
+  score: 0
+  breakSound: {fileID: 8300000, guid: e1d7835a4ced6dd4993e315d0c055b14, type: 3}
+  hasPrize: 1

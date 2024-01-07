@@ -1,30 +1,33 @@
 public class Vice : Boss
 {
 
+
+
     void Update() {
 
         UpdateByChild();
 
     }
 
-    public override bool Animate(string animation, string[] animArgs)
+    public override bool Animate(string animation, string[] animArgs, bool firstTime = true)
     {
         try {
-            return base.Animate(animation, animArgs);
+            return base.Animate(animation, animArgs, firstTime);
         } catch(AnimationCommandException) {
         }
-
-        if(!AnimationManager.GetInstance().IsAnimationPlaying(animator, animation)) {
-            switch(animation) {
-                case "shootUp":
+        
+        switch(animation) {
+            case "shootUp":
+                if(firstTime) {
                     ShootUp();
                     return false;
-                default:
-                    throw new AnimationCommandException();
-            }
-        } else {
-            return true;
+                }
+                break;
+            default:
+                throw new AnimationCommandException();
         }
+
+        return AnimationManager.GetInstance().IsAnimationPlaying(animator, animation);
     }
 
     public void ShootUp()

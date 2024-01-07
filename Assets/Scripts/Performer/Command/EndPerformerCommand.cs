@@ -7,7 +7,7 @@ public class EndPerformerCommand : OneShotPerformerCommand {
         this.command = PerformerCommandEnum.END;
     }
 
-    public override PerformerTime Execute(Camera camera, Dictionary<string, GameObject> gameObjects, bool ff)
+    public override PerformerTime Execute(Camera camera, Dictionary<string, GameObject> gameObjects, bool ff, bool firstTime = true)
     {
         UIManager.GetInstance().HideAllMessages();
 

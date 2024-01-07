@@ -8,7 +8,7 @@ public class TextPerformerCommand : TimeConditionalPerformerCommand {
         this.command = PerformerCommandEnum.TEXT;
     }
 
-    public override PerformerTime Execute(Camera camera, Dictionary<string, GameObject> gameObjects, bool ff)
+    public override PerformerTime Execute(Camera camera, Dictionary<string, GameObject> gameObjects, bool ff, bool firstTime = true)
     {
         PerformerTime time = base.Execute(camera, gameObjects, ff);
 

@@ -10,23 +10,25 @@ public class Boss : Enemy
 
     }
 
-    public override bool Animate(string animation, string[] animArgs)
+    public override bool Animate(string animation, string[] animArgs, bool firstTime = true)
     {
         try {
-            return base.Animate(animation, animArgs);
+            return base.Animate(animation, animArgs, firstTime);
         } catch(AnimationCommandException) {
         }
 
-        if(!AnimationManager.GetInstance().IsAnimationPlaying(animator, animation)) {
-            switch(animation) {
-                case "die":
+        switch(animation) {
+            case "die":
+                if(firstTime) {
                     return false;
-                default:
-                    throw new AnimationCommandException();
-            }
-        } else {
-            return true;
+                }
+                break;
+            default:
+                throw new AnimationCommandException();
         }
+
+        return !AnimationManager.GetInstance().IsAnimationPlaying(animator, animation);
+        
     }
 
 }

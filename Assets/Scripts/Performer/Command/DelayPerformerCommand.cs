@@ -8,7 +8,7 @@ public class DelayPerformerCommand : TimeConditionalPerformerCommand {
         this.command = PerformerCommandEnum.DELAY;
     }
 
-    public override PerformerTime Execute(Camera camera, Dictionary<string, GameObject> gameObjects, bool ff)
+    public override PerformerTime Execute(Camera camera, Dictionary<string, GameObject> gameObjects, bool ff, bool firstTime = true)
     {
         PerformerTime time = base.Execute(camera, gameObjects, ff);
         time.duration = float.Parse(arguments[0], CultureInfo.InvariantCulture);

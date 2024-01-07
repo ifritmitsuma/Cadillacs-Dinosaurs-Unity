@@ -70,4 +70,12 @@ public class PerformerManager : MonoBehaviour
             cutsceneListeners.FastForward(false);
         }
     }
+
+    internal void AddGameObject(GameObject obj)
+    {
+        if(performer == null) {
+            return;
+        }
+        performer.AddGameObject(obj);
+    }
 }

@@ -1,3 +1,4 @@
+using System.Data.Common;
 using UnityEngine;
 
 public class Player : Character
@@ -25,8 +26,8 @@ public class Player : Character
         if(paused || inCutscene) {
             moveX = 0.0f;
             moveY = 0.0f;
-            animator.SetFloat("moveMagnitude", 0.0f);
             if(paused) {
+                animator.SetFloat("moveMagnitude", 0.0f);
                 return;
             }
         }
@@ -38,12 +39,9 @@ public class Player : Character
         }
 
         if(Input.GetButtonDown("Punch")) {
-            attacking = true;
             Punch();
             return;
         }
-
-        attacking = false;
 
         // Movement
 
@@ -103,38 +101,52 @@ public class Player : Character
 
     }
 
-    public override bool Animate(string animation, string[] animArgs)
+    public override bool Animate(string animation, string[] animArgs, bool firstTime = true)
     {
         try {
-            return base.Animate(animation, animArgs);
+            return base.Animate(animation, animArgs, firstTime);
         } catch(AnimationCommandException) {
         }
 
-        if(!AnimationManager.GetInstance().IsAnimationPlaying(animator, animation)) {
-            switch(animation) {
-                case "punch":
+        switch(animation) {
+            case "punch":
+                if(firstTime) {
                     Punch();
                     return false;
-                case "special":
+                }
+                break;
+            case "special":
+                if(firstTime) {
                     Special();
                     return false;
-                default:
-                    throw new AnimationCommandException();
-            }
-        } else {
-            return true;
+                }
+                break;
+            default:
+                throw new AnimationCommandException();
         }
+        
+        return !AnimationManager.GetInstance().IsAnimationPlaying(animator, animation);
         
     }
 
     public void Punch()
     {
-        AnimationManager.GetInstance().Play(animator, "punch");
+        if(!attacking) {
+            attacking = true;
+            AnimationManager.GetInstance().Play(animator, "punch", () => {
+                attacking = false;
+            });
+        }
     }
 
     public void Special()
     {
-        AnimationManager.GetInstance().Play(animator, "special");
+        if(!attacking) {
+            attacking = true;
+            AnimationManager.GetInstance().Play(animator, "special", () => {
+                attacking = false;
+            });
+        }
     }
 
     public void GetHit(int damage) {

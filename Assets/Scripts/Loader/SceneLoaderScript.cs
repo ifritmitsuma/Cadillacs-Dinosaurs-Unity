@@ -49,11 +49,10 @@ public class SceneLoaderScript : MonoBehaviour
         AsyncOperation unloadSceneOp = SceneManager.UnloadSceneAsync(currentScene);
         yield return new WaitUntil(() => {
             UIManager.GetInstance().UpdateLoading(unloadSceneOp.progress / (scene != null ? 2 : 1), unloadSceneOp.isDone && scene == null);
-            if(unloadSceneOp.isDone) {
-                return true;
-            }
-            return false;
+            return unloadSceneOp.isDone;
         });
+
+        Camera.main.transform.position = new Vector3(0.0f, 0.0f, -10.0f);
 
         unloadFinished?.Invoke();
         
@@ -68,11 +67,9 @@ public class SceneLoaderScript : MonoBehaviour
         AsyncOperation loadSceneOp = SceneManager.LoadSceneAsync(scene, LoadSceneMode.Additive);
         yield return new WaitUntil(() => {
             UIManager.GetInstance().UpdateLoading(loadSceneOp.progress / (unloadBefore ? 2 : 1), loadSceneOp.isDone);
-            if(loadSceneOp.isDone) {
-                return true;
-            }
-            return false;
+            return loadSceneOp.isDone;
         });
+        UIManager.GetInstance().OverlayFade(true);
         currentScene = scene;
 
     }

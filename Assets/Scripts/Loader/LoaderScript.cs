@@ -22,7 +22,7 @@ public class LoaderScript : MonoBehaviour
         yield return new WaitUntil(() => {
             return gameObject.scene.isLoaded;
         });
-        Camera.main.transform.localPosition = new Vector3(backgrounds.localPosition.x, backgrounds.localPosition.y, Camera.main.transform.localPosition.z);
+        //Camera.main.transform.localPosition = new Vector3(backgrounds.localPosition.x, backgrounds.localPosition.y, Camera.main.transform.localPosition.z);
         Camera.main.GetComponent<Parallax>().backgrounds = backgrounds;
         Camera.main.GetComponent<FollowPlayer>().backgroundDelimiter = furthestBackground;
 
@@ -30,9 +30,13 @@ public class LoaderScript : MonoBehaviour
             throw new SystemException();
         }
 
-        GameManager.GetInstance().LoadPlayers(sceneSettings.Player1Pos, sceneSettings.Player2Pos);
-        
         PerformerManager.GetInstance().SetPerformer(performer);
+
+        GameManager.GetInstance().LoadPlayers(sceneSettings.Player1Pos, sceneSettings.Player2Pos, PerformerManager.GetInstance().HasPerformance("Start"));
+
+        if(!string.IsNullOrEmpty(sceneSettings.music)) {
+            AudioManager.GetInstance().PlayMusic(sceneSettings.music, true);
+        } 
 
     }
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,6 +10,8 @@ public class AnimationManager : MonoBehaviour
 
     private readonly Dictionary<Animator, int> activeAnimations = new();
 
+    private readonly Dictionary<Animator, Action> activeAnimationCallbacks = new();
+
     public static AnimationManager GetInstance() {
         return instance;
     }
@@ -17,9 +20,14 @@ public class AnimationManager : MonoBehaviour
         instance = this;
     }
 
-    public void Play(Animator animator, string animation) {
-        animator.Play(animation);
+    public void Play(Animator animator, string animation, Action callback = null) {
+        if(!IsAnimationPlaying(animator, animation)) {
+            animator.Play(animation);
+        }
         activeAnimations[animator] = Animator.StringToHash("Base Layer." + animation);
+        if(callback != null) {
+            activeAnimationCallbacks[animator] = callback;
+        }
     }
 
     private bool IsAnimationPlaying(Animator animator, int animationHash) {
@@ -33,6 +41,10 @@ public class AnimationManager : MonoBehaviour
     public void EndAnimation(Animator animator, int animationHash) {
         if(IsAnimationPlaying(animator, animationHash)) {
             activeAnimations.Remove(animator);
+        }
+        if(activeAnimationCallbacks.ContainsKey(animator)) {
+            activeAnimationCallbacks[animator].Invoke();
+            activeAnimationCallbacks.Remove(animator);
         }
     }
 

@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 037c6f22d4d903946b2e58c7b2738c6c, type: 3}
   m_Name: EnemySoundSelection
   m_EditorClassIdentifier: 
-  die: {fileID: 8300000, guid: 90f5d519ac0480e4f81c150ce2d6ca02, type: 3}
+  die: {fileID: 8300000, guid: 9a6e14c3835e2674399f6894229094a0, type: 3}

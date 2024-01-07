@@ -3,7 +3,7 @@ using UnityEngine;
 
 public abstract class ConditionalPerformerCommand : PerformerCommand {
     
-    public override PerformerTime Execute(Camera camera, Dictionary<string, GameObject> dic, bool ff) {
+    public override PerformerTime Execute(Camera camera, Dictionary<string, GameObject> dic, bool ff, bool firstTime = true) {
         return new();
     }
 

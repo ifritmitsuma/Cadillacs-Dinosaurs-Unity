@@ -8,13 +8,13 @@ public class ObjectPerformerCommand : ConditionalPerformerCommand {
         this.command = PerformerCommandEnum.OBJ;
     }
 
-    public override PerformerTime Execute(Camera camera, Dictionary<string, GameObject> gameObjects, bool ff)
+    public override PerformerTime Execute(Camera camera, Dictionary<string, GameObject> gameObjects, bool ff, bool firstTime = true)
     {
 
         PerformerTime time = base.Execute(camera, gameObjects, ff);
         time.duration = -1;
 
-        GameObject obstacle = Array.Find<GameObject>(GameObject.FindGameObjectsWithTag("Obstacle"), (x) => x.name == arguments[0]);
+        GameObject obstacle = Array.Find(GameObject.FindGameObjectsWithTag("Obstacle"), (x) => x.name == arguments[0]);
 
         if(obstacle == null) {
             time.ended = true;

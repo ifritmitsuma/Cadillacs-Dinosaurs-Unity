@@ -8,10 +8,8 @@ public class CharacterPerformerCommand : ConditionalPerformerCommand {
         this.command = PerformerCommandEnum.CHAR;
     }
 
-    public override PerformerTime Execute(Camera camera, Dictionary<string, GameObject> gameObjects, bool ff)
+    public override PerformerTime Execute(Camera camera, Dictionary<string, GameObject> gameObjects, bool ff, bool firstTime = true)
     {
-
-
         PerformerTime time = base.Execute(camera, gameObjects, ff);
         time.duration = -1;
 
@@ -22,7 +20,7 @@ public class CharacterPerformerCommand : ConditionalPerformerCommand {
         }
         string[] animArgs = arguments[2..];
         character.TryGetComponent<Character>(out var characterScript);
-        if(!characterScript.Animate(arguments[1], animArgs)) {
+        if(!characterScript.Animate(arguments[1], animArgs, firstTime)) {
             return time;
         }
         time.ended = true;
