@@ -34,7 +34,7 @@ public class Player : Character
 
         UpdateByChild();
 
-        if(inCutscene) {
+        if(inCutscene || dying) {
             return;
         }
 

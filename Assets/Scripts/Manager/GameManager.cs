@@ -152,42 +152,35 @@ public class GameManager : MonoBehaviour
         UIManager.GetInstance().UpdateScore(player.index, amount);
     }
 
-    IEnumerator AfterDeath(Character character, PlayerStats stats = null, Vector3? lastPosition = null, Action callback = null)
-    {
-        character.Die();
-        yield return new WaitUntil(() => !AnimationManager.GetInstance().IsAnimationPlaying(character.animator, "die"));
-        callback?.Invoke();
-        Destroy(character.gameObject);
-        switch(character) {
-            case Player:
-                Player player = (Player) character;
-                players.Remove(player);
-                if(stats.lives > 0) {
-                    Camera.main.GetComponent<FollowPlayer>().locked = false;
-                    stats.lives--;
-                    stats.hp = 100;
-                    PlayerInfo playerInfo = GetPlayerInfo(player);
-                    PlayerSoundSelection playerSounds = GetPlayerSounds(player);
-                    GameObject newPlayer = LoadPlayer(player.index, lastPosition.Value, stats);
-                    AddPlayerInfo(newPlayer, playerInfo);
-                    AddPlayerSounds(newPlayer, playerSounds);
-                    UIManager.GetInstance().SetPlayerInfo(player.index, player.info, stats);
-                    UIManager.GetInstance().HideMessage("center");
-                    MakeHaste();
-                } else {
-                    UIManager.GetInstance().GameOver(player.index);
-                }
-                break;
-            case Enemy:
-                break;
-            default: break;
-        }
-        Destroy(character.gameObject);
-    }
-
     public void KillCharacter(Character character, PlayerStats stats = null, Vector3? lastPosition = null, Action callback = null)
     {
-        StartCoroutine(AfterDeath(character, stats, lastPosition, callback));
+        character.Die(() => {
+            switch(character) {
+                case Player:
+                    Player player = (Player) character;
+                    players.Remove(player);
+                    if(stats.lives > 0) {
+                        Camera.main.GetComponent<FollowPlayer>().locked = false;
+                        stats.lives--;
+                        stats.hp = 100;
+                        PlayerInfo playerInfo = GetPlayerInfo(player);
+                        PlayerSoundSelection playerSounds = GetPlayerSounds(player);
+                        GameObject newPlayer = LoadPlayer(player.index, lastPosition.Value, stats);
+                        AddPlayerInfo(newPlayer, playerInfo);
+                        AddPlayerSounds(newPlayer, playerSounds);
+                        UIManager.GetInstance().SetPlayerInfo(player.index, player.info, stats);
+                        UIManager.GetInstance().HideMessage("center");
+                        MakeHaste();
+                    } else {
+                        UIManager.GetInstance().GameOver(player.index);
+                    }
+                    break;
+                case Enemy:
+                    break;
+                default: break;
+            }
+            Destroy(character.gameObject);
+        });
     }
 
     public void MakeHaste(float timerValue = -1.0f)

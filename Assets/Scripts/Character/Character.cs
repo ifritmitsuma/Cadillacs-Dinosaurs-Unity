@@ -24,6 +24,8 @@ public abstract class Character : MonoBehaviour, IPauseListener, ICutsceneListen
 
     protected bool rightDirection = true;
 
+    protected bool dying = false;
+
     protected bool paused;
 
     protected bool inCutscene;
@@ -49,12 +51,17 @@ public abstract class Character : MonoBehaviour, IPauseListener, ICutsceneListen
 
     void Update() {
 
+        if(dying) {
+            return;
+        }
+
         if((rightDirection && transform.localScale.x < 0) || (!rightDirection && transform.localScale.x > 0)) {
             transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
             rightDirection = transform.localScale.x > 0;
         }
-
+        
         animationSpriteRenderer.sortingOrder = (int) (transform.position.y  * -1000);
+        
 
     }
 
@@ -197,8 +204,9 @@ public abstract class Character : MonoBehaviour, IPauseListener, ICutsceneListen
         transform.position += new Vector3((rightDirection ? 0.01f : -0.01f) * (run ? 2.0f : 1.0f) * speed, 0.0f, 0.0f);
     }
 
-    public bool Die() {
-        AnimationManager.GetInstance().Play(animator, "die");
+    public bool Die(Action callback = null) {
+        dying = true;
+        AnimationManager.GetInstance().Play(animator, "die", callback);
         return !AnimationManager.GetInstance().IsAnimationPlaying(animator, "die");        
     }
 
