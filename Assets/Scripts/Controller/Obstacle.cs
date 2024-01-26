@@ -19,13 +19,18 @@ public class Obstacle : MonoBehaviour, IAnimatable
     void OnTriggerEnter2D(Collider2D other) {
 
         if(other.gameObject.layer == LayerMask.NameToLayer("Player") && other is CircleCollider2D && other.isTrigger) {
-            Player player = other.transform.parent.GetComponent<Player>();
-            if(player.attacking) {
+            Player player = other.GetComponent<HitCollisionScript>().player;
+            if(player.IsAttacking()) {
                 GetComponent<Collider2D>().enabled = false;
                 if(obstacleSettings.breakSound) {
                     AudioManager.GetInstance().PlaySound(obstacleSettings.breakSound);
                 }
-                AnimationManager.GetInstance().Play(animator, "break");
+                AnimationManager.GetInstance().Play(animator, "break", () => {
+                    Destroy(gameObject);
+                });
+                foreach(Collider2D collider in GetComponents<Collider2D>()) {
+                    collider.enabled = false;
+                }
                 GameManager.GetInstance().UpdateScore(player, obstacleSettings.score);
                 if(obstacleSettings.hasPrize && prizePrefab) {
                     GameObject prize = Instantiate(prizePrefab, transform.position, transform.rotation);

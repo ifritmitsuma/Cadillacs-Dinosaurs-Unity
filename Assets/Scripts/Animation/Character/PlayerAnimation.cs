@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class PlayerAnimation : CharacterAnimation {
@@ -9,11 +10,27 @@ public class PlayerAnimation : CharacterAnimation {
     }
 
     public void SoundSpecial() {
-        AudioManager.GetInstance().PlaySound(playerSounds.special);
+        Sound(playerSounds.special);
     }
 
     public void SoundDie() {
-        AudioManager.GetInstance().PlaySound(playerSounds.die);
+        Sound(playerSounds.die);
     }
-    
+
+    public void SoundDelicious()
+    {
+        Sound(playerSounds.delicious);
+    }
+
+    public void SoundCombo1() {
+        Sound(playerSounds.combo1);
+    }
+
+    public void SoundCombo2() {
+        Sound(playerSounds.combo2);
+    }
+
+    public void SoundRunningAttack() {
+        Sound(playerSounds.runningAttack);
+    }
 }

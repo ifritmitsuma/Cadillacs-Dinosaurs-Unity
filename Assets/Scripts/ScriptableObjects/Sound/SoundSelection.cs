@@ -5,4 +5,8 @@ public class SoundSelection : ScriptableObject {
 
     public AudioClip gunfire;
 
+    public AudioClip hit;
+
+    public AudioClip miss;
+
 }

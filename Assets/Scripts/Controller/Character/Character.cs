@@ -20,17 +20,13 @@ public abstract class Character : MonoBehaviour, IPauseListener, ICutsceneListen
     protected float moveX;
     protected float moveY;
 
-    protected bool run;
-
     protected bool rightDirection = true;
-
-    protected bool dying = false;
+    
+    public CharacterStateEnum state = CharacterStateEnum.IDLE;
 
     protected bool paused;
 
     protected bool inCutscene;
-
-    public bool attacking;
 
     void Start() {
         GameManager.GetInstance().RegisterPauseListener(this);
@@ -40,7 +36,7 @@ public abstract class Character : MonoBehaviour, IPauseListener, ICutsceneListen
         animator = animationChild.GetComponent<Animator>();
         animationSpriteRenderer = animationChild.GetComponent<SpriteRenderer>();
 
-        animationChild.TryGetComponent(out rb);
+        TryGetComponent(out rb);
 
         rightDirection = transform.localScale.x > 0;
     }
@@ -51,7 +47,7 @@ public abstract class Character : MonoBehaviour, IPauseListener, ICutsceneListen
 
     void Update() {
 
-        if(dying) {
+        if(state == CharacterStateEnum.DYING) {
             return;
         }
 
@@ -174,38 +170,42 @@ public abstract class Character : MonoBehaviour, IPauseListener, ICutsceneListen
         return transform.position.x > Camera.main.transform.position.x + Camera.main.orthographicSize * Camera.main.aspect * 1.5f;
     }
 
-    
-    protected void MoveY()
-    {
-        if(run) {
-            AnimationManager.GetInstance().Play(animator, "run");
-        } else {
-            AnimationManager.GetInstance().Play(animator, "walk");
-        }
-        if(rb != null && rb.bodyType != RigidbodyType2D.Static) {
-            rb.MovePosition(new Vector3(0.0f, (moveY > 0.0f ? 0.01f : -0.01f) * (run ? 2.0f : 1.0f) * speed / 2.0f, 0.0f));
-        }
-        transform.position += new Vector3(0.0f, (moveY > 0.0f ? 0.01f : -0.01f) * (run ? 2.0f : 1.0f) * speed / 2.0f, 0.0f);
-    }
-
-    protected void MoveX()
+    protected void Move(bool movementAttack = false)
     {
 
-        rightDirection = moveX > 0.0f;
+        bool run = true;
+        if(!movementAttack) {
 
-        if(run) {
-            AnimationManager.GetInstance().Play(animator, "run");
-        } else {
-            AnimationManager.GetInstance().Play(animator, "walk");
+            rightDirection = moveX > 0.0f;
+            run = state == CharacterStateEnum.RUNNING;
+            
+            if(run) {
+                AnimationManager.GetInstance().Play(animator, "run");
+            } else {
+                AnimationManager.GetInstance().Play(animator, "walk");
+            }
         }
+        
+        float xMovement = 0.0f;
+        float yMovement = 0.0f;
+        
+        if(moveX != 0.0f) {
+            xMovement = (rightDirection ? 0.01f : -0.01f) * (run ? 2.0f : 1.0f) * (movementAttack ? 1.5f : 1.0f) * speed;
+        }
+        if(moveY != 0.0f) {
+            yMovement = moveY / (Mathf.Abs(moveY) * 100) * (run ? 2.0f : 1.0f) * (movementAttack ? 1.5f : 1.0f) * speed / 2.0f;
+        }
+
         if(rb != null && rb.bodyType != RigidbodyType2D.Static) {
-            rb.MovePosition(new Vector3((rightDirection ? 0.01f : -0.01f) * (run ? 2.0f : 1.0f) * speed, 0.0f, 0.0f));
+            rb.MovePosition(rb.position + new Vector2(xMovement, yMovement));
+        } else {
+            transform.position += new Vector3(xMovement, yMovement, 0.0f);
         }
-        transform.position += new Vector3((rightDirection ? 0.01f : -0.01f) * (run ? 2.0f : 1.0f) * speed, 0.0f, 0.0f);
+
     }
 
     public bool Die(Action callback = null) {
-        dying = true;
+        state = CharacterStateEnum.DYING;
         AnimationManager.GetInstance().Play(animator, "die", callback);
         return !AnimationManager.GetInstance().IsAnimationPlaying(animator, "die");        
     }
@@ -241,5 +241,17 @@ public abstract class Character : MonoBehaviour, IPauseListener, ICutsceneListen
         if(animator)
             animator.speed = ff ? 3.0f : 1.0f;
         speed = ff ? speed * 3.0f : speed / 3.0f;
+    }
+
+    public bool IsAttacking() {
+        return state == CharacterStateEnum.ATTACKING;
+    }
+
+    public bool IsJumping() {
+        return state == CharacterStateEnum.JUMPING;
+    }
+
+    public bool IsPicking() {
+        return state == CharacterStateEnum.PICKING;
     }
 }

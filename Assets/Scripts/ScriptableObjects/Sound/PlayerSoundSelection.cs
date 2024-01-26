@@ -7,4 +7,12 @@ public class PlayerSoundSelection : ScriptableObject {
 
     public AudioClip die;
 
+    public AudioClip delicious;
+
+    public AudioClip combo1;
+
+    public AudioClip combo2;
+
+    public AudioClip runningAttack;
+
 }

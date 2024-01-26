@@ -17,7 +17,20 @@ public class CharacterAnimation : MonoBehaviour {
     }
 
     public void SoundGunfire() {
-        AudioManager.GetInstance().PlaySound(sounds.gunfire);
+        Sound(sounds.gunfire);
+    }
+
+    public void SoundHit() {
+        Sound(sounds.hit);
+    }
+
+    public void SoundMiss()
+    {
+        Sound(sounds.miss);
+    }
+
+    protected void Sound(AudioClip clip) {
+        AudioManager.GetInstance().PlaySound(clip);
     }
 
     

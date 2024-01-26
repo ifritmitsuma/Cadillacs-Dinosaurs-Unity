@@ -1,10 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -12,6 +8,10 @@ public class GameManager : MonoBehaviour
     private List<string> playersSelected = new(2) { "Mustapha" };
 
     private Dictionary<int, PlayerStats> playerStats = new(2);
+
+    public List<GameObject> playerObjects = new();
+
+    public List<GameObject> enemyObjects = new();
 
     private List<Player> players = new();
 
@@ -89,7 +89,7 @@ public class GameManager : MonoBehaviour
 
     public GameObject LoadPlayer(int index, PlayerStats stats = null)
     {
-        GameObject playerPrefab = Resources.Load<GameObject>("Prefabs/Player");
+        GameObject playerPrefab = Resources.Load<GameObject>("Prefabs/Character/Player/Player");
         GameObject player = Instantiate(playerPrefab);
         player.name = "Player" + index;
         Player playerScript = player.GetComponent<Player>();
@@ -99,6 +99,7 @@ public class GameManager : MonoBehaviour
         } else {
             playerStats[index] = new PlayerStats() {hp = 100, lives = 1, score = 0};
         }
+        playerObjects.Add(player);
         players.Add(playerScript);
         return player;
     }
@@ -149,7 +150,7 @@ public class GameManager : MonoBehaviour
     {
         PlayerStats stats = playerStats[player.index];
         stats.score += amount;
-        UIManager.GetInstance().UpdateScore(player.index, amount);
+        UIManager.GetInstance().UpdateScore(player.index, stats.score);
     }
 
     public void KillCharacter(Character character, PlayerStats stats = null, Vector3? lastPosition = null, Action callback = null)

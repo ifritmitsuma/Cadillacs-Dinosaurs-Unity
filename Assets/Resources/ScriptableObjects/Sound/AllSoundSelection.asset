@@ -13,3 +13,5 @@ MonoBehaviour:
   m_Name: AllSoundSelection
   m_EditorClassIdentifier: 
   gunfire: {fileID: 8300000, guid: 9bb258f9bbc2dcf408048aadbb55f1c4, type: 3}
+  hit: {fileID: 8300000, guid: dec45193ad24d334bb1ae00d49d415ae, type: 3}
+  miss: {fileID: 8300000, guid: 3c2893e8a9f156840a525eab8132b0ed, type: 3}

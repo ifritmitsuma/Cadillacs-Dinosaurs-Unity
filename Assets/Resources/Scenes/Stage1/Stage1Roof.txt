@@ -1,11 +1,11 @@
 ## Start
-newc Ferris Ferris2 23.86 -1.83 right
-newc Ferris Ferris1 23 -2.51 right
-newc Gneiss Gneiss1 23.62 -3.1 right
-newc Vice Vice 29.96 -1.83 left
-newc Ferris Ferris3 28.14 -1.73 left
-newc Ferris Ferris4 29.03 -2.26 left
-newc Ferris Ferris5 28.78 -2.99 left
+newc Enemy Ferris Ferris2 23.86 -1.83 right
+newc Enemy Ferris Ferris1 23 -2.51 right
+newc Enemy Gneiss Gneiss1 23.62 -3.1 right
+newc Enemy/Boss Vice Vice 29.96 -1.83 left
+newc Enemy Ferris Ferris3 28.14 -1.73 left
+newc Enemy Ferris Ferris4 29.03 -2.26 left
+newc Enemy Ferris Ferris5 28.78 -2.99 left
 play "04 Opening Demo"
 camm 26.5 5
 text center "Eastcoast 2513" 3

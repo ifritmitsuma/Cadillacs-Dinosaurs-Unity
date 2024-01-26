@@ -20,9 +20,9 @@ public class AnimationManager : MonoBehaviour
         instance = this;
     }
 
-    public void Play(Animator animator, string animation, Action callback = null) {
-        if(!IsAnimationPlaying(animator, animation)) {
-            animator.Play(animation);
+    public void Play(Animator animator, string animation, Action callback = null, bool reset = false) {
+        if(reset || !IsAnimationPlaying(animator, animation)) {
+            animator.Play(animation, 0, 0);
         }
         activeAnimations[animator] = Animator.StringToHash("Base Layer." + animation);
         if(callback != null) {
@@ -41,10 +41,10 @@ public class AnimationManager : MonoBehaviour
     public void EndAnimation(Animator animator, int animationHash) {
         if(IsAnimationPlaying(animator, animationHash)) {
             activeAnimations.Remove(animator);
-        }
-        if(activeAnimationCallbacks.ContainsKey(animator)) {
-            activeAnimationCallbacks[animator].Invoke();
-            activeAnimationCallbacks.Remove(animator);
+            if(activeAnimationCallbacks.ContainsKey(animator)) {
+                activeAnimationCallbacks[animator].Invoke();
+                activeAnimationCallbacks.Remove(animator);
+            }
         }
     }
 

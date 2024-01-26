@@ -7,7 +7,7 @@ public class BossAnimation : EnemyAnimation {
     }
 
     public override void SoundDie() {
-        AudioManager.GetInstance().PlaySound(bossSounds.die);
+        Sound(bossSounds.die);
     }
     
 }

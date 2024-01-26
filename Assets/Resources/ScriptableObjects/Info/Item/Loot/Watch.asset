@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cb00347a46684f4fac4b5a9c9c9c857, type: 3}
+  m_Name: Watch
+  m_EditorClassIdentifier: 
+  sprite: {fileID: 948993927, guid: fbe28d3472c594d4ca2c554f088afd7e, type: 3}
+  animatorController: {fileID: 9100000, guid: 626898bdeb9b34c4780c278a351b1c9a, type: 2}
+  score: 3000

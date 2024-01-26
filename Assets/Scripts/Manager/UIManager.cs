@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,6 +22,8 @@ public class UIManager : MonoBehaviour, IPauseListener
     public Image fadeOverlay;
 
     private static UIManager instance;
+
+    private readonly Dictionary<int, Coroutine> uiTargetCoRoutines = new();
 
     public static UIManager GetInstance()
     {
@@ -96,7 +99,7 @@ public class UIManager : MonoBehaviour, IPauseListener
         return topUI.gameObject.activeSelf;
     }
 
-    public Transform GetPlayerUI(int index) {
+    public Transform GetPlayerUITop(int index) {
         return topUI.transform.Find("Player" + index);
     }
 
@@ -106,7 +109,7 @@ public class UIManager : MonoBehaviour, IPauseListener
             return;
         }
 
-        Transform playerInfo = GetPlayerUI(player).Find("Info");
+        Transform playerInfo = GetPlayerUITop(player).Find("Info");
         playerInfo.gameObject.SetActive(true);
         Image avatar = playerInfo.Find("Picture").GetComponent<Image>();
         Text nameText = playerInfo.Find("Name").GetComponent<Text>();
@@ -129,7 +132,7 @@ public class UIManager : MonoBehaviour, IPauseListener
             return;
         }
 
-        Transform playerInfo = GetPlayerUI(player).Find("Info");
+        Transform playerInfo = GetPlayerUITop(player).Find("Info");
         Slider hpSlider = playerInfo.Find("HP").GetComponent<Slider>();
         hpSlider.value = hp;
 
@@ -141,7 +144,7 @@ public class UIManager : MonoBehaviour, IPauseListener
             return;
         }
 
-        Transform playerInfo = GetPlayerUI(player).Find("Info");
+        Transform playerInfo = GetPlayerUITop(player).Find("Info");
         Text livesText = playerInfo.Find("Lives").GetComponent<Text>();
         livesText.text = "=" + lives;
         
@@ -153,14 +156,14 @@ public class UIManager : MonoBehaviour, IPauseListener
             return;
         }
 
-        Transform playerInfo = GetPlayerUI(player).Find("Info");
+        Transform playerInfo = GetPlayerUITop(player).Find("Info");
         Text scoreText = playerInfo.Find("Score").GetComponent<Text>();
         scoreText.text = string.Format("{0:D7}", score);
     }
 
     public void GameOver(int index)
     {
-        Transform player = GetPlayerUI(index);
+        Transform player = GetPlayerUITop(index);
         player.Find("Info").gameObject.SetActive(false);
         Transform status = player.Find("Status");
         status.gameObject.SetActive(true);
@@ -195,5 +198,45 @@ public class UIManager : MonoBehaviour, IPauseListener
             return fadeOverlay.color.a == (fadeIn ? 0 : 1);
         });
         callback?.Invoke();
+    }
+
+    public void NewPickup(int playerIndex, Item item)
+    {
+
+        switch(item) {
+            case Weapon:
+                break;
+            case Food:
+            case Loot:
+                if(uiTargetCoRoutines.ContainsKey(playerIndex)) {
+                    StopCoroutine(uiTargetCoRoutines[playerIndex]);
+                    uiTargetCoRoutines.Remove(playerIndex);
+                }
+                SetPlayerUITopTarget(playerIndex, item.uiIcon, item.itemInfo.name, item is Food ? "TASTY !!!" : ((LootInfo) item.itemInfo).score + " Pts");
+                uiTargetCoRoutines.Add(playerIndex, StartCoroutine(ClearPlayerTargetUI(playerIndex)));
+                break;
+            default: break;
+        }
+    }
+
+    IEnumerator ClearPlayerTargetUI(int playerIndex)
+    {
+        yield return new WaitForSeconds(3);
+        SetPlayerUITopTarget(playerIndex, null, null);
+        uiTargetCoRoutines.Remove(playerIndex);
+        
+    }
+
+    void SetPlayerUITopTarget(int playerIndex, Sprite icon, string name, string text = null, int hp = -1) {
+
+        Transform topPlayer = GetPlayerUITop(playerIndex);
+        topPlayer.Find("Target/Icon").GetComponent<Image>().sprite = icon;
+        topPlayer.Find("Target/Name").GetComponent<Text>().text = name;
+        topPlayer.Find("Target/Text").gameObject.SetActive(text != null);
+        topPlayer.Find("Target/Text").GetComponent<Text>().text = text;
+        topPlayer.Find("Target/HP").gameObject.SetActive(hp > -1);
+        topPlayer.Find("Target/HP").GetComponent<Slider>().value = hp;
+        topPlayer.Find("Target").gameObject.SetActive(name != null);
+    
     }
 }

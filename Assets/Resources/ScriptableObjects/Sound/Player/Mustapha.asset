@@ -14,3 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   special: {fileID: 8300000, guid: 922c5f7184c99e8459a5baedf05e090b, type: 3}
   die: {fileID: 8300000, guid: 59aa06fa06a76bd479fc6b03ba8edc43, type: 3}
+  delicious: {fileID: 8300000, guid: 629a7456ae4e9f9468f33de8da0ccb1d, type: 3}
+  combo1: {fileID: 8300000, guid: 315be36f3bc838a459c4fb6e6307ffed, type: 3}
+  combo2: {fileID: 8300000, guid: 944739d51b0175c44b0f8df09f16c2df, type: 3}

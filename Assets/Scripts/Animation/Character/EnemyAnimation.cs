@@ -16,7 +16,7 @@ public class EnemyAnimation : CharacterAnimation {
     }
 
     public virtual void SoundDie() {
-        AudioManager.GetInstance().PlaySound(enemySounds.die);
+        Sound(enemySounds.die);
     }
     
 }

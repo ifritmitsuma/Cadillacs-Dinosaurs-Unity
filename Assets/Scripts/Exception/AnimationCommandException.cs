@@ -8,7 +8,7 @@ public class AnimationCommandException : Exception
     {
     }
 
-    public AnimationCommandException(string message) : base(message)
+    public AnimationCommandException(string message) : base("Playing the animation " + message + " caused an exception")
     {
     }
 

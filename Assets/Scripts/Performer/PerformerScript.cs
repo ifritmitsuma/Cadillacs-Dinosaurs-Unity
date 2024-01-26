@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PerformerScript : MonoBehaviour, IPauseListener, ICutsceneListener
 {
@@ -71,10 +72,10 @@ public class PerformerScript : MonoBehaviour, IPauseListener, ICutsceneListener
 
     public void StartPerformance(string name) {
         dic = new();
-        foreach(GameObject player in GameObject.FindGameObjectsWithTag("Player")) {
+        foreach(GameObject player in GameManager.GetInstance().playerObjects) {
             dic.Add(player.name, player);
         }
-        foreach(GameObject enemy in GameObject.FindGameObjectsWithTag("Enemy")) {
+        foreach(GameObject enemy in GameManager.GetInstance().enemyObjects) {
             dic.Add(enemy.name, enemy);
         }
 
